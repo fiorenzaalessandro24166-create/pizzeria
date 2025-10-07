@@ -1,0 +1,651 @@
+    <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Pizzeria da Mimmo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rosso-pomodoro: #DD3333;
+            --verde-basilico: #2E8B57;
+            --bianco-crema: #FFFDF7;
+            --antracite: #222;
+            --grigio-chiaro: #F5F5F5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bianco-crema);
+            color: var(--antracite);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--rosso-pomodoro) 0%, #C92929 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box:focus {
+            border-color: var(--rosso-pomodoro);
+            box-shadow: 0 0 0 3px rgba(221, 51, 51, 0.1);
+        }
+
+        /* Category Tabs */
+        .tabs-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            color: var(--antracite);
+        }
+
+        .tab-button:hover {
+            border-color: var(--rosso-pomodoro);
+            color: var(--rosso-pomodoro);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--rosso-pomodoro);
+            color: white;
+            border-color: var(--rosso-pomodoro);
+        }
+
+        /* Menu Grid */
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem 3rem;
+        }
+
+        .category-section {
+            display: none;
+        }
+
+        .category-section.active {
+            display: block;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--rosso-pomodoro);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .product-image-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-content {
+            padding: 1.5rem;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--antracite);
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            color: var(--rosso-pomodoro);
+            font-weight: 600;
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .product-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--grigio-chiaro);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .badge.vegetarian {
+            background: #E8F5E9;
+            color: var(--verde-basilico);
+        }
+
+        .badge.spicy {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .badge.gluten-free {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .badge.dairy {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--antracite);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>🍕 Pizzeria da Mimmo</h1>
+        <p>Autentica tradizione napoletana dal 1985</p>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input 
+            type="text" 
+            class="search-box" 
+            id="searchInput" 
+            placeholder="🔍 Cerca per nome o ingrediente..."
+        >
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="tabs-container">
+        <div class="tabs" id="categoryTabs"></div>
+    </div>
+
+    <!-- Menu Container -->
+    <div class="menu-container" id="menuContainer"></div>
+
+    <!-- No Results Message -->
+    <div class="no-results" id="noResults">
+        Nessun prodotto trovato. Prova con un'altra ricerca.
+    </div>
+
+    <script>
+        // Menu Data
+        const menuData = {
+            "Pizze Classiche": [
+                {
+                    name: "Margherita DOP",
+                    description: "Pomodoro San Marzano DOP, fior di latte, basilico fresco, olio EVO",
+                    price: "7,50",
+                    image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: "Ingredienti DOP certificati"
+                },
+                {
+                    name: "Marinara",
+                    description: "Pomodoro San Marzano DOP, aglio, origano, olio EVO",
+                    price: "6,00",
+                    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
+                    badges: ["vegetarian"],
+                    tooltip: "Ricetta tradizionale napoletana"
+                },
+                {
+                    name: "Napoli",
+                    description: "Pomodoro, mozzarella, acciughe del Cantabrico, capperi, origano",
+                    price: "8,50",
+                    image: "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: null
+                },
+                {
+                    name: "Quattro Formaggi",
+                    description: "Mozzarella, gorgonzola DOP, parmigiano reggiano, provola affumicata",
+                    price: "9,00",
+                    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: "Formaggi selezionati DOP"
+                }
+            ],
+            "Pizze Speciali": [
+                {
+                    name: "Bufalina",
+                    description: "Mozzarella di Bufala Campana DOP, pomodoro, basilico",
+                    price: "10,00",
+                    image: "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: "Mozzarella di Bufala Campana DOP"
+                },
+                {
+                    name: "Diavola",
+                    description: "Salame piccante artigianale, fior di latte, pomodoro",
+                    price: "9,50",
+                    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&h=400&fit=crop",
+                    badges: ["spicy", "dairy"],
+                    tooltip: null
+                },
+                {
+                    name: "Capricciosa",
+                    description: "Prosciutto cotto, funghi champignon, carciofi, olive, mozzarella",
+                    price: "10,50",
+                    image: "https://images.unsplash.com/photo-1571407970349-bc81e7e96a47?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: null
+                },
+                {
+                    name: "Salsiccia e Friarielli",
+                    description: "Salsiccia napoletana, friarielli, fior di latte, peperoncino",
+                    price: "11,00",
+                    image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&h=400&fit=crop",
+                    badges: ["spicy", "dairy"],
+                    tooltip: "Specialità campana"
+                }
+            ],
+            "Fritti & Antipasti": [
+                {
+                    name: "Montanara",
+                    description: "Base fritta, pomodoro, parmigiano reggiano, basilico",
+                    price: "4,50",
+                    image: "https://images.unsplash.com/photo-1601924582970-9238bcb495d9?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: "Fritta al momento"
+                },
+                {
+                    name: "Arancino al Ragù",
+                    description: "Riso carnaroli, ragù lento di carne, piselli, provola",
+                    price: "3,00",
+                    image: "https://images.unsplash.com/photo-1633964913295-ceb43826e36f?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: null
+                },
+                {
+                    name: "Crocchè di Patate",
+                    description: "Patate, parmigiano, prezzemolo, panatura croccante",
+                    price: "2,50",
+                    image: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: null
+                },
+                {
+                    name: "Frittatina di Pasta",
+                    description: "Pasta, besciamella, piselli, provola, panatura",
+                    price: "3,50",
+                    image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: null
+                }
+            ],
+            "Dolci": [
+                {
+                    name: "Tiramisù della Casa",
+                    description: "Mascarpone fresco, savoiardi, caffè espresso, cacao amaro",
+                    price: "5,00",
+                    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: "Ricetta tradizionale"
+                },
+                {
+                    name: "Babà al Rum",
+                    description: "Babà napoletano, bagnato al rum, panna montata",
+                    price: "4,50",
+                    image: "https://images.unsplash.com/photo-1587241321921-91a834d82ffc?w=600&h=400&fit=crop",
+                    badges: ["dairy"],
+                    tooltip: "Specialità napoletana"
+                },
+                {
+                    name: "Pastiera Napoletana",
+                    description: "Grano, ricotta, canditi, acqua di fiori d'arancio",
+                    price: "5,50",
+                    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=400&fit=crop",
+                    badges: ["vegetarian", "dairy"],
+                    tooltip: "Dolce pasquale tradizionale"
+                }
+            ],
+            "Bevande": [
+                {
+                    name: "Acqua Frizzante 50cl",
+                    description: "Acqua minerale naturale frizzante",
+                    price: "1,50",
+                    image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&h=400&fit=crop",
+                    badges: [],
+                    tooltip: null
+                },
+                {
+                    name: "Acqua Naturale 50cl",
+                    description: "Acqua minerale naturale",
+                    price: "1,50",
+                    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&h=400&fit=crop",
+                    badges: [],
+                    tooltip: null
+                },
+                {
+                    name: "Birra Artigianale 33cl",
+                    description: "Birra artigianale italiana, selezione del giorno",
+                    price: "4,00",
+                    image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&h=400&fit=crop",
+                    badges: [],
+                    tooltip: "Chiedi al cameriere"
+                },
+                {
+                    name: "Coca Cola 33cl",
+                    description: "Bibita gassata classica",
+                    price: "2,50",
+                    image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=600&h=400&fit=crop",
+                    badges: [],
+                    tooltip: null
+                },
+                {
+                    name: "Vino della Casa (calice)",
+                    description: "Vino rosso o bianco della casa",
+                    price: "3,50",
+                    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&h=400&fit=crop",
+                    badges: [],
+                    tooltip: "Rosso o bianco"
+                }
+            ]
+        };
+
+        // Badge icons and labels
+        const badgeConfig = {
+            vegetarian: { icon: "🌱", label: "Vegetariana" },
+            spicy: { icon: "🌶️", label: "Piccante" },
+            "gluten-free": { icon: "✅", label: "Senza glutine" },
+            dairy: { icon: "🧀", label: "Contiene latticini" }
+        };
+
+        // Initialize
+        let currentCategory = "Pizze Classiche";
+
+        function init() {
+            renderTabs();
+            renderMenu();
+            setupSearch();
+        }
+
+        // Render category tabs
+        function renderTabs() {
+            const tabsContainer = document.getElementById('categoryTabs');
+            const categories = Object.keys(menuData);
+            
+            tabsContainer.innerHTML = categories.map(category => `
+                <button 
+                    class="tab-button ${category === currentCategory ? 'active' : ''}" 
+                    onclick="switchCategory('${category}')"
+                >
+                    ${category}
+                </button>
+            `).join('');
+        }
+
+        // Switch category
+        function switchCategory(category) {
+            currentCategory = category;
+            renderTabs();
+            renderMenu();
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Render menu
+        function renderMenu(searchTerm = '') {
+            const container = document.getElementById('menuContainer');
+            const noResults = document.getElementById('noResults');
+            
+            let html = '';
+            let hasResults = false;
+
+            Object.keys(menuData).forEach(category => {
+                const products = menuData[category];
+                const filteredProducts = products.filter(product => {
+                    if (searchTerm) {
+                        const searchLower = searchTerm.toLowerCase();
+                        return product.name.toLowerCase().includes(searchLower) ||
+                               product.description.toLowerCase().includes(searchLower);
+                    }
+                    return category === currentCategory;
+                });
+
+                if (filteredProducts.length > 0) {
+                    hasResults = true;
+                    const isActive = searchTerm || category === currentCategory;
+                    
+                    html += `
+                        <div class="category-section ${isActive ? 'active' : ''}">
+                            <h2 class="category-title">${category}</h2>
+                            <div class="menu-grid">
+                                ${filteredProducts.map(product => renderProductCard(product)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html;
+            
+            if (hasResults) {
+                noResults.classList.remove('show');
+            } else {
+                noResults.classList.add('show');
+            }
+        }
+
+        function renderProductCard(product) {
+            const badges = product.badges.map(badge => {
+                const config = badgeConfig[badge];
+                return `<span class="badge ${badge}">${config.icon} ${config.label}</span>`;
+            }).join('');
+
+            const tooltipHtml = product.tooltip ? 
+                `<span class="tooltip">ℹ️<span class="tooltiptext">${product.tooltip}</span></span>` : '';
+
+            return `
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img 
+                            src="${product.image}" 
+                            alt="${product.name}" 
+                            class="product-image"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3 class="product-name">${product.name} ${tooltipHtml}</h3>
+                            <span class="product-price">€${product.price}</span>
+                        </div>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-badges">
+                            ${badges}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = e.target.value.trim();
+                    renderMenu(searchTerm);
+                }, 300);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
